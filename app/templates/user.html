@@ -1,0 +1,155 @@
+{% extends "layout.html" %}
+
+{% block data_state %}
+{% if is_mongo_migrated == True %}
+    <a style="color:green;">Mongo</a>
+{% else %}
+    <a style="color:red;">SQL</a>
+{% endif %}
+{% endblock data_state %}
+
+
+{% block whostheuser %}
+{{user_first}} {{user_last}}
+{% endblock whostheuser %}
+
+{% block content %} 
+
+<!-- Create Policy Form  -->
+<div class="content-section">
+        <form method="POST" action="">
+            
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Create a policy</legend>
+                <div class="form-group">
+                    {{ form.FrameNumber.label(class="form-control-label") }}
+                    {{ form.FrameNumber(class="form-control form-control-lg") }}
+                </div>
+                <div class="form-group">
+                    {{ form.ReplacementValue.label(class="form-control-label") }}
+                    {{ form.ReplacementValue(class="form-control form-control-lg") }}
+                </div>
+            </fieldset>
+            <div class = Checkbox>
+                <a>Choose one or many options</a>
+                <label><input type="checkbox" name="check" value="1"> Theft  </label>
+                <label><input type="checkbox" name="check" value="2"> Vandalism </label>
+                <label><input type="checkbox" name="check" value="3"> Fire  </label>
+                <label><input type="checkbox" name="check" value="4"> Loss  </label>
+                <label><input type="checkbox" name="check" value="5"> Robbery  </label>
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+            
+        </form>
+
+    </div>
+
+<!-- If Policy is submitted, show offer table + submit/decline form  -->
+{% if has_offer == True %}
+<h3>Your offer: </h3>
+<table class="table table-bordered" width="50%">
+    <thead>
+        <tr>
+            <th scope ='col'>Option</th>
+            <th scope ='col'>Fee</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for option in offer_print %}
+            <tr>
+                    {% for value in option %} 
+                            <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            <tr>
+                <td><b>Total</b></td>
+                <td><b>{{total_price}}</b></td>
+            </tr>
+    </tbody>
+</table>
+
+<form method="POST" action="">
+<div class="form-group">
+    {{ form2.accept(class="btn btn-outline-info") }}
+    {{ form2.decline(class="btn btn-outline-info") }}
+</div>
+</form>
+
+<!-- show flash messages  -->
+{% endif %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+<!-- print table with all policies of one user  -->
+<h3>My Policies</h3>
+<!-- table for SQL -->
+{% if is_mongo_migrated == False %}
+<table class="table" id="user_policies">
+    <thead>
+            <tr>
+                    <th scope="col">Policy ID</th>
+                    <th scope="col">UserID</th>
+                    <th scope="col">FrameNumber</th>
+                    <th scope="col">Replacement Value</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col">Report Claim</th>                                      
+            </tr>
+    </thead>
+    <tbody>
+            {% for row in all_policies %}
+                    <tr>
+                            {% for value in row %} 
+                                    <td>{{ value }}</td>
+                            {% endfor %}
+                            <form action="" method="POST">
+                                <input id="policy_id" name="policy_id" type="hidden" value = "{{row[0]}}">
+                                <td><button type ="submit" name= "report_claim" value = "{{row[0]}}" formmethod="post">Report Claim</button></td>
+                            </form>
+                    </tr>
+            {% endfor %}
+    </tbody>
+</table>
+
+{% else %} <!-- table for Mongo -->
+
+
+<table class="table" id="user_policies">
+    <thead>
+            <tr>
+                    <th scope="col">Policy ID</th>
+                    <th scope="col">Policy Holder</th>
+                    <th scope="col">FrameNumber</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col">Report Claim</th>                                      
+            </tr>
+    </thead>
+    <tbody>
+        {% for row in all_policies %}
+                <tr>
+                        {% for value in row %} 
+                                <td>{{ value }}</td>
+                        {% endfor %}
+                        <form action="" method="POST">
+                            <input id="policy_id" name="policy_id" type="hidden" value = "{{row[0]}}">
+                            <td><button type ="submit" name= "report_claim" value = "{{row[0]}}" formmethod="post">Report Claim</button></td>
+                        </form>
+                </tr>
+        {% endfor %}
+</tbody>
+</table>
+
+{% endif %}
+
+{% endblock content %}

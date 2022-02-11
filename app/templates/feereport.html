@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+
+{% block whostheuser %}
+{{user_first}} {{user_last}}
+{% endblock whostheuser %}
+
+
+{% block data_state %}
+{% if is_mongo_migrated == True %}
+    <a style="color:green;">Mongo</a>
+{% else %}
+    <a style="color:red;">SQL</a>
+{% endif %}
+{% endblock data_state %}
+
+{% block content %} 
+
+        <form method="post">
+                <label for="feereportSelector">Min. Policies:</label>
+                <select name="feereportSelector" class="dropdown" onchange="this.form.submit()" id="feereportFilter">
+                        <option value="{{ filter }}">{{ filter }}</option>
+                        {% for i in range(1, max_policies+1) %}
+                                {% if i != filter %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                {% endif %}
+                        {% endfor %}
+                </select>
+        </form>
+
+        <table class="table" id="feereport">
+                <thead>
+                        <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Last name</th>
+                                <th scope="col">First name</th>
+                                <th scope="col">Theft</th>
+                                <th scope="col">Vandalism</th>
+                                <th scope="col">Fire</th>
+                                <th scope="col">Loss</th>
+                                <th scope="col">Robbery</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Policies</th>
+                        </tr>
+                </thead>
+                <tbody>
+                        {% for row in result %}
+                                <tr>
+                                        {% for value in row %} 
+                                                <td>{{ value }}</td>
+                                        {% endfor %}
+                                </tr>
+                        {% endfor %}
+                </tbody>
+        </table>
+
+{% endblock content %}

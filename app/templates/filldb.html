@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+
+{% block data_state %}
+{% if is_mongo_migrated == True %}
+    <a style="color:green;">Mongo</a>
+{% elif is_mongo_migrated == False %}
+    <a style="color:red;">SQL</a>
+{% endif %}
+{% endblock data_state %}
+
+{% block content %} 
+    <br><br>
+    <h2> Please choose a database option.</h2>
+    
+        <div class="ima_container" >
+            <figure>
+     
+                <img src="/static/120px-Logo_MySQL.svg.png" alt="SQL" style="margin-right:100px;" >
+      
+            {%if is_mongo_migrated != None %}
+     
+                <img src="/static/db.jpg" width=120 height=60 alt="Mongo">
+          
+            {%endif%}
+        </figure>
+        </div>
+
+ 
+        <form method="POST" action="">
+                <button class="btn btn-primary" type="submit" name="fill_sql" value="fill_sql">Create and fill MySQL DB</button>
+                {%if is_mongo_migrated != None %}
+            
+                <button class="btn btn-primary" type="submit" name="fill_mongo" value="fill_mongo">Migrate data to MongoDB</button>
+                {%endif%}
+         </form>
+
+
+         {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+       {% endwith %}
+
+       {% if temp %} 
+                <p>{{ temp }}</p>
+        {% endif %}
+
+{% endblock content %}

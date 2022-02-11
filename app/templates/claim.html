@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+
+
+{% block whostheuser %}
+{{user_first}} {{user_last}}
+{% endblock whostheuser %}
+
+{% block data_state %}
+{% if is_mongo_migrated == True %}
+    <a style="color:green;">Mongo</a>
+{% else %}
+    <a style="color:red;">SQL</a>
+{% endif %}
+{% endblock data_state %}
+
+
+{% block content %} 
+
+
+<div class="content-section">
+        <form method="POST" action="">
+            
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Submit a Claim for policy: {{ policy_id }} </legend>
+                <div class="form-group">
+                        {{ form.Description.label(class="form-control-label") }}
+                        {{ form.Description(class="form-control form-control-lg") }}
+                </div>
+                <div class="form-group">
+        
+                        {{ form.Dateofloss.label(class="form-control-label") }}
+                        {{ form.Dateofloss(class="form-control form-control-lg") }}
+           
+                </div>
+
+                <div class="form-group">
+                        {{ form.lossineuro.label(class="form-control-label") }}
+                        {{ form.lossineuro(class="form-control form-control-lg") }}
+                
+                </div>
+
+            </fieldset>
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.cancel(class="btn btn-outline-info") }}
+            </div>
+        </form>
+
+    </div>
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% if is_mongo_migrated == False %}
+<table class="table" id="claim_sql">
+    <thead>
+            <tr>
+                    <th scope="col">Policy ID</th>
+                    <th scope="col">Claim ID</th>
+                    <th scope="col">Option ID</th>
+                    <th scope="col">Claim Description</th>
+                    <th scope="col">Claim Date</th>
+                    <th scope="col">loss</th>
+                    <th scope="col">Claim Status</th>                                      
+            </tr>
+    </thead>
+    <tbody>
+            {% for row in n_claims %}
+                    <tr>
+                            {% for value in row %} 
+                                    <td>{{ value }}</td>
+                            {% endfor %}
+                           
+                    </tr>
+            {% endfor %}
+    </tbody>
+</table>
+{% else %}
+
+<table class="table" id="claim_mongo">
+    <thead>
+            <tr>
+                    <th scope="col">Policy ID</th>
+                    <th scope="col">Claim ID</th>
+                    <th scope="col">Claim Date</th>
+                    <th scope="col">Claim Description</th>
+                    <th scope="col">Claim Status</th>                                      
+            </tr>
+    </thead>
+    <tbody>
+        {% for row in n_claims %}
+                <tr>
+                        {% for value in row %} 
+                                <td>{{ value }}</td>
+                        {% endfor %}
+                </tr>
+        {% endfor %}
+</tbody>
+</table>
+
+{% endif %}
+{% endblock content %}

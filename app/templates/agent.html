@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+
+
+{% block data_state %}
+{% if is_mongo_migrated == True %}
+    <a style="color:green;">Mongo</a>
+{% else %}
+    <a style="color:red;">SQL</a>
+{% endif %}
+{% endblock data_state %}
+
+
+{% block whostheuser %}
+{{user_first}} {{user_last}}
+{% endblock whostheuser %}
+
+
+{% block content %} 
+        <br><br>
+        <h2> Please choose a report </h2>
+        
+        <form method="POST" action="">
+
+                <button class="btn btn-primary" type="submit" name="feereport_button" value="feereport_button">View Fee Report</button>
+                <button class="btn btn-primary" type="submit" name="claimreport_button" value="claimreport_button">View Claim Report</button>
+        </form>   
+
+{% endblock content %}
