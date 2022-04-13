@@ -1,1 +1,2 @@
-TODO
+# Bike Insurance Company 
+This project was conducted for the lecture Information Management and Systems Engineering at the University of Vienna. It is about a small webapp for a fictional bike insurance company (see `documentation/milestone1.pdf` for a detailed description of the use case). The app is built on the **Flask** framework in Python. A central task was to build up an SQL database (with pseudo data) and later migrate it to a MongoDB database. We implemented the whole process in Python using **mysql-connector** as well as **pymongo** (have a look at `app/requirements.txt` for all used libraries). The `documentation/milestone2.pdf` file provides further insight into the migration process and some potential advantages of MongoDB over (My)SQL. 
